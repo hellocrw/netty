@@ -37,7 +37,13 @@ public class DiscardServer {
 
     public void run() {
         // Configure the server.
+        // TODO: 2021/7/29 配置服务器 Server  new NioServerSocketChannelFactory类中构造BossPool和WorkerPool
         ServerBootstrap bootstrap = new ServerBootstrap(
+            /**
+             * TODO NioServerSocketChannelFactory的作用:
+             *  1. 初始化NioServerBossPool 和 NioWorkerPool
+             *  2. 初始化NioServerSocketPipelineSink
+             */
                 new NioServerSocketChannelFactory(
                         Executors.newCachedThreadPool(),
                         Executors.newCachedThreadPool()));

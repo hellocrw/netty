@@ -85,6 +85,7 @@ public final class NioServerBoss extends AbstractNioSelector implements Boss {
 
     @Override
     protected void process(Selector selector) {
+        // SelectionKey记录客户端的连接通道，每个Channel对应一个SelectionKey
         Set<SelectionKey> selectedKeys = selector.selectedKeys();
         if (selectedKeys.isEmpty()) {
             return;
@@ -97,10 +98,12 @@ public final class NioServerBoss extends AbstractNioSelector implements Boss {
             try {
                 // accept connections in a for loop until no new connection is ready
                 for (;;) {
+                    // TODO: 2021/7/31 socket.accept() 负责接收Client的连接
                     SocketChannel acceptedSocket = channel.socket.accept();
                     if (acceptedSocket == null) {
                         break;
                     }
+                    // registerAcceptedChannel注册通道
                     registerAcceptedChannel(channel, acceptedSocket, thread);
                 }
             } catch (CancelledKeyException e) {
@@ -134,6 +137,7 @@ public final class NioServerBoss extends AbstractNioSelector implements Boss {
             ChannelPipeline pipeline =
                     parent.getConfig().getPipelineFactory().getPipeline();
             NioWorker worker = parent.workerPool.nextWorker();
+            // TODO: 2021/7/31 NioWorker.register注册，注册通道
             worker.register(new NioAcceptedSocketChannel(
                     parent.getFactory(), pipeline, parent, sink
                     , acceptedSocket,

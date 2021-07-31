@@ -39,6 +39,7 @@ public final class DeadLockProofWorker {
             public void run() {
                 PARENT.set(parent);
                 try {
+                    // TODO runnable --> ThreadRenamingRunnable
                     runnable.run();
                 } finally {
                     PARENT.remove();

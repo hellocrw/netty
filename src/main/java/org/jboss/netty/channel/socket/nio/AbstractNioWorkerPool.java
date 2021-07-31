@@ -59,6 +59,8 @@ public abstract class AbstractNioWorkerPool<E extends AbstractNioWorker>
             init();
         }
     }
+
+    // TODO: 2021/7/29 初始化WorkerExecutor workers[i] = newWorker(workerExecutor)
     protected void init() {
         if (initDone) {
             throw new IllegalStateException("Init was done before");
@@ -66,6 +68,7 @@ public abstract class AbstractNioWorkerPool<E extends AbstractNioWorker>
         initDone = true;
 
         for (int i = 0; i < workers.length; i++) {
+            // TODO: 2021/7/29 init AbstractNioWorker[] workers
             workers[i] = newWorker(workerExecutor);
         }
     }

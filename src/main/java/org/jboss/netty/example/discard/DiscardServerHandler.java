@@ -25,6 +25,8 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.handler.timeout.IdleState;
+import org.jboss.netty.handler.timeout.IdleStateEvent;
 
 /**
  * Handles a server-side channel.
@@ -43,11 +45,17 @@ public class DiscardServerHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void handleUpstream(ChannelHandlerContext ctx, ChannelEvent e) throws Exception {
         if (e instanceof ChannelStateEvent) {
-            logger.info(e.toString());
+            logger.info("test" + e.getChannel());
         }
-
-        // Let SimpleChannelHandler call actual event handler methods below.
-        super.handleUpstream(ctx, e);
+        if (e instanceof IdleStateEvent) {
+            IdleStateEvent idleState = (IdleStateEvent) e;
+            if (idleState.getState() == IdleState.ALL_IDLE) {
+                logger.info("Channel {} is idle, will be closed " + e.getChannel());
+                ctx.getChannel().close();
+            }
+        } else {
+            super.handleUpstream(ctx, e);
+        }
     }
 
     @Override

@@ -87,6 +87,7 @@ abstract class AbstractNioWorker extends AbstractNioSelector implements Worker {
 
     @Override
     public void run() {
+        // TODO: 2021/7/31 super -> AbstractNioSelector
         super.run();
         sendBufferPool.releaseExternalResources();
     }

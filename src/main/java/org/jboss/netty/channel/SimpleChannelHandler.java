@@ -80,6 +80,8 @@ public class SimpleChannelHandler implements ChannelUpstreamHandler, ChannelDown
      * {@inheritDoc}  Down-casts the received upstream event into more
      * meaningful sub-type event and calls an appropriate handler method with
      * the down-casted event.
+     *
+     * TODO　HandleUpstream的作用是什么？
      */
     public void handleUpstream(
             ChannelHandlerContext ctx, ChannelEvent e) throws Exception {

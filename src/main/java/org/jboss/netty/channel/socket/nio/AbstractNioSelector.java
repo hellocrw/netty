@@ -42,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 abstract class AbstractNioSelector implements NioSelector {
 
+    // nextId
     private static final AtomicInteger nextId = new AtomicInteger();
 
     private final int id = nextId.incrementAndGet();
@@ -52,7 +53,7 @@ abstract class AbstractNioSelector implements NioSelector {
     protected static final InternalLogger logger = InternalLoggerFactory
             .getInstance(AbstractNioSelector.class);
 
-    private static final int CLEANUP_INTERVAL = 256; // XXX Hard-coded value, but won't need customization.
+    private static final int CLEANUP_INTERVAL = 256; // cleanup_interval XXX Hard-coded value, but won't need customization.
 
     /**
      * Executor used to execute {@link Runnable}s such as channel registration
@@ -186,6 +187,8 @@ abstract class AbstractNioSelector implements NioSelector {
         logger.info("Migrated " + nChannels + " channel(s) to the new Selector,");
     }
 
+    // TODO: 2021/7/31 AbstractNioSelector的run方法是在什么时候调用的？  NettyServer 和 NettyClient启动的时候都调用到这个方法
+    // TODO: 2021/7/31 在NioWorker的时候调用的，说明是在NioWorker工作线程执行的时候 ，什么时候会调用到NioWorker线程执行任务呢？
     public void run() {
         thread = Thread.currentThread();
 
@@ -325,6 +328,7 @@ abstract class AbstractNioSelector implements NioSelector {
                     shutdownLatch.countDown();
                     break;
                 } else {
+                    // TODO: 2021/7/31 处理selector，将selector注入
                     process(selector);
                 }
             } catch (Throwable t) {
@@ -345,6 +349,9 @@ abstract class AbstractNioSelector implements NioSelector {
     /**
      * Start the {@link AbstractNioWorker} and return the {@link Selector} that will be used for
      * the {@link AbstractNioChannel}'s when they get registered
+     *
+     * 当AbstractNioChannel被注册的时候，开启AbstractNioWorker和返回Selector
+     * TODO openSelector分析
      */
     private void openSelector(ThreadNameDeterminer determiner) {
         try {
@@ -353,9 +360,10 @@ abstract class AbstractNioSelector implements NioSelector {
             throw new ChannelException("Failed to create a selector.", t);
         }
 
-        // Start the worker thread with the new Selector.
+        // Start the worker thread with the new Selector. 新的Selector启动worker线程
         boolean success = false;
         try {
+            // TODO: 2021/7/31 Worker启动执行
             DeadLockProofWorker.start(executor, newThreadRenamingRunnable(id, determiner));
             success = true;
         } finally {
@@ -373,6 +381,7 @@ abstract class AbstractNioSelector implements NioSelector {
         assert selector != null && selector.isOpen();
     }
 
+    // TODO: 2021/7/31 处理taskQueue中的任务
     private void processTaskQueue() {
         for (;;) {
             final Runnable task = taskQueue.poll();
@@ -419,6 +428,7 @@ abstract class AbstractNioSelector implements NioSelector {
         }
     }
 
+    // TODO: 2021/7/29 process -> processSelectedKeys -> connect -> register -> taskRegister
     protected abstract void process(Selector selector) throws IOException;
 
     protected int select(Selector selector) throws IOException {

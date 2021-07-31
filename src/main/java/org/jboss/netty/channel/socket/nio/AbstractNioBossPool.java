@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class AbstractNioBossPool<E extends Boss>
         implements BossPool<E>, ExternalResourceReleasable {
 
+    // TODO: 2021/7/29 Boss extends NioSelector Boss是对NioSelector进一步的封装，实际上还是一个NioSelector
     private final Boss[] bosses;
     private final AtomicInteger bossIndex = new AtomicInteger();
     private final Executor bossExecutor;

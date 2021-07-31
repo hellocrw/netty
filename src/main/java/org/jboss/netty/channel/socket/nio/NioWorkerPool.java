@@ -35,7 +35,8 @@ public class NioWorkerPool extends AbstractNioWorkerPool<NioWorker> {
 
     public NioWorkerPool(Executor workerExecutor, int workerCount, ThreadNameDeterminer determiner) {
         super(workerExecutor, workerCount, false);
-        this.determiner = determiner;
+        this.determiner = determiner;  // 决定因素 = null
+        // TODO: 2021/7/29 初始化NioWorkerPool
         init();
     }
 

@@ -112,6 +112,7 @@ public class NioServerSocketChannelFactory implements ServerSocketChannelFactory
      */
     public NioServerSocketChannelFactory(
             Executor bossExecutor, Executor workerExecutor) {
+        // TODO: 2021/7/29 getMaxThreads(workerExecutor) = 16
         this(bossExecutor, workerExecutor, getMaxThreads(workerExecutor));
     }
 
@@ -128,6 +129,7 @@ public class NioServerSocketChannelFactory implements ServerSocketChannelFactory
     public NioServerSocketChannelFactory(
             Executor bossExecutor, Executor workerExecutor,
             int workerCount) {
+        // TODO: 2021/7/29 bossExecutor数量为1  workerExecutor数量为getMaxThreads(workerExecutor)
         this(bossExecutor, 1, workerExecutor, workerCount);
     }
 

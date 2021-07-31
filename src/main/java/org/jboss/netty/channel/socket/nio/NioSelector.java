@@ -23,11 +23,14 @@ import java.nio.channels.Selector;
 
 public interface NioSelector extends Runnable {
 
+    // TODO: 2021/7/29 Selector注册通道
     void register(Channel channel, ChannelFuture future);
 
     /**
      * Replaces the current {@link Selector} with a new {@link Selector} to work around the infamous epoll 100% CPU
      * bug.
+     *
+     * 用一个新的Selector替换当前的Selector工作， 臭名昭著的epoll 100%的CPU BUG问题
      */
     void rebuildSelector();
 

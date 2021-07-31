@@ -43,6 +43,7 @@ public class DiscardClient {
     public void run() {
         // Configure the client.
         ClientBootstrap bootstrap = new ClientBootstrap(
+            // TODO NioClientSocketChannelFactory 和 NioServerSocketChannelFactory的区别？
                 new NioClientSocketChannelFactory(
                         Executors.newCachedThreadPool(),
                         Executors.newCachedThreadPool()));
